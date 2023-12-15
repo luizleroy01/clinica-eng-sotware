@@ -1,0 +1,11 @@
+.principal{
+    display: flex;
+    justify-content: center;
+    
+    padding:0.625rem;
+    background-color:#4F4F4F;
+    color: white;
+    width:100%;
+    margin-top: auto;
+    
+}

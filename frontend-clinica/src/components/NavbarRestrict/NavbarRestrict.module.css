@@ -1,0 +1,22 @@
+.principal{
+    background-color: #D3D3D3;
+    display: flex;
+    justify-content: center;
+    text-decoration: none;
+}
+.principal ul{
+    list-style: none;
+    display: flex;
+    flex-direction:row;
+    align-items: center;
+    
+}
+
+.principal ul li{
+    margin:1rem;
+    font-weight: bold;
+}
+.principal ul li a{
+    text-decoration: none;
+    color:black;
+}

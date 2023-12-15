@@ -1,0 +1,44 @@
+.header{
+    display:flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #40E0D0;
+    color:white;
+    padding:0.8rem;
+}
+
+.principal{
+    display: inline-flex;
+    justify-content: center;
+    margin:0.4rem;
+    width:95%;
+}
+
+.principal img{
+    margin:0 0.625rem;
+    height:3rem;
+    width:3rem;
+}
+
+.login{
+    justify-content:end;
+    width:5%;
+}
+.funcao{
+    text-decoration: none;
+    color:black;
+}
+.funcao:hover{
+    color:white;
+}
+button{
+    padding:0.5rem;
+    border-radius: 5px;
+    font-size: 1rem;
+}
+
+button:hover{
+    background-color:rgb(55, 55, 55);
+    color:white;
+    cursor:pointer;
+}

@@ -1,0 +1,41 @@
+.principal{
+    display: flex;
+    padding:10px;
+   background-color: #bef0ea;
+   min-height: 520px;
+   
+}
+.table{
+    align-items: center;
+    background-color:#edf0f3;
+    text-align: center;
+    width:100%;
+    border-radius: 5px;
+    border: 1px solid black;
+    border-collapse: collapse;
+    border-radius: 5px;
+    
+ }
+ 
+ .table tr:hover,td:hover{
+     background-color:#d3d4d6;
+ }
+ .table th{
+     background-color: black;
+     color: white;
+     padding:10px;
+     height:40px;
+ }
+ .table td{
+     padding:10px;
+ }
+ .titulo{
+    background-color: black;
+    color:white;
+    padding:5px;
+    width:100%;
+    text-align: center;
+ }
+ .conteudo{
+    display:block;
+ }

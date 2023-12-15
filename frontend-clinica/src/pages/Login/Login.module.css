@@ -1,0 +1,11 @@
+.submit{
+    background-color: rgb(58, 162, 58);
+    color:white
+}
+.submit:hover{
+    background-color: rgb(40, 132, 40);
+    cursor:pointer;
+}
+.principal{
+    min-height: 545px;
+}

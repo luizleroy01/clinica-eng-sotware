@@ -1,5 +1,7 @@
 import {useState} from 'react'
 import styles from './FormEmployee.module.css'
+import { dataEmployee } from '../../configuration'
+
 export function FormEmployee(){
     const[nome,setNome] = useState("")
     const[email,setEmail] = useState("")
@@ -16,10 +18,10 @@ export function FormEmployee(){
     const[password,setPassword] = useState("")
     const[salario,setSalario] = useState("")
 
-    const roles = ['comum','médico'];
+    const roles = ['comum','medico'];
 
     const sendEmployee = async(employee)=>{
-        const url = "http://localhost:5000/funcionario";
+        const url = dataEmployee;
         const res = await fetch(url,{
             method:'POST',
             headers:{
@@ -36,7 +38,7 @@ export function FormEmployee(){
             //const address = searchAddress(value);
             console.log("chamou fetch")
             let address =null
-            if(address){
+            if(address != null){
                 setLogradouro(address.logradouro)
                 setBairro(address.bairro)
                 setCidade(address.cidade)
@@ -46,11 +48,10 @@ export function FormEmployee(){
     }
 
     const handleSubmit = (e) => {
-        e.preventDefault()
-        let cepIsValid = validarCEP(cep)
-        if(!cepIsValid){
-            return
-        }
+        e.preventDefault();
+
+        let salarioValue = parseFloat(salario);
+        
         const employee ={
             nome:nome,
             email:email,
@@ -60,16 +61,19 @@ export function FormEmployee(){
             bairro:bairro,
             cidade:cidade,
             estado:estado,
+            salario:salarioValue,
             tipo:typeEmployee,
             especialidade:doctorRole,
             crm:crm,
-            data:dataInicio,
+            data_contrato:dataInicio,
             senha:password,
         }
         
+        console.log(employee)
 
         const response = sendEmployee(employee)
-        
+        console.log(response)
+
         setNome("")
         setEmail("")
         setTelefone("")
@@ -169,7 +173,7 @@ export function FormEmployee(){
                     Cidade:
                     <input type="text"
                         name="cidade"
-                        value={bairro}
+                        value={cidade}
                         onChange={(e)=>setCidade(e.target.value)}
                         placeholder="Nome da Cidade"
                         required

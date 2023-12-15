@@ -157,11 +157,13 @@ app.post('/endereco', async (req, res) => {
             "endereco":JSON.stringify(newAddress),
             "medico":JSON.stringify(newDoctor)}).status(200);
           }
-
+        /*
         res.json({"pessoa":JSON.stringify(newPerson),
         "funcionario":JSON.stringify(newEmployee),
         "endereco":JSON.stringify(newAddress)}).status(200);
-        //res.json({"response":"Inserido com sucesso"}).status(200);
+       */
+
+        res.json({"response":"Inserido com sucesso"}).status(200);
       } catch (error) {
         res.send(error);
       }

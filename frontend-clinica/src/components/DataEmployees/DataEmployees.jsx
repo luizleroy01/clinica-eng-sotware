@@ -1,18 +1,20 @@
 import {useState,useEffect} from 'react'
 import styles from './DataEmployees.module.css'
+import { dataEmployee } from '../../configuration'
+import axios from 'axios'
 
 export function DataEmployees(){
     const[employees,setEmployees] = useState([])
     useEffect(()=>{
         async function fetchData(){
-            const url = "#"
-            const res = await fetch(url)
-            const data = await res.json()
+            const url = dataEmployee;
+            const res = await axios.get(url)
+            const {data} = res.data;
             setEmployees(data);
-            console.log(getDoctorRoles)
+            console.log(data)
           }
           fetchData()
-    })
+    },[])
     return(
         <div className={styles.conteudo}>
         <div className={styles.titulo}>

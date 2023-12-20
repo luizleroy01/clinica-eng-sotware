@@ -10,6 +10,8 @@ export function DataEmployees(){
             const url = dataEmployee;
             const res = await axios.get(url)
             const {data} = res.data;
+
+          
             setEmployees(data);
             console.log(data)
           }
@@ -27,16 +29,17 @@ export function DataEmployees(){
                     <th>Nome</th>
                     <th>Telefone</th>
                     <th>Email</th>
-                    <th>Tipo</th>
+                    <th>Salário</th>
                     <th>Data de inicio</th>
             </tr>
             {(
                 employees.map((e)=>(
-                    <tr key={e.id}>
-                        <td>{e.nome}</td>
-                        <td>{e.telefone}</td>
-                        <td>{e.typeEmployee}</td>
-                        <td>{e.dataInicio}</td>
+                    <tr key={e.person.codigo}>
+                        <td>{e.person.nome}</td>
+                        <td>{e.person.telefone}</td>
+                        <td>{e.person.email}</td>
+                        <td>{e.employee.salario}</td>
+                        <td>{e.employee.data_contrato}</td>
                     </tr>
                 ))
             )}

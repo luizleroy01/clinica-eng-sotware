@@ -171,8 +171,19 @@ app.post('/endereco', async (req, res) => {
   
   app.get('/funcionario',async(req,res)=>{
     try {
-        const records = await funcionario.findAll();
-    
+        const recEmployee = await funcionario.findAll();
+        const recPeople = await pessoa.findAll();
+        let records = [];
+        
+        recPeople.forEach((person)=>{
+          recEmployee.forEach((employee)=>{
+            if(employee.codigo_pessoa === person.codigo){
+              let record = {"person":person,"employee":employee};
+              records.push(record);
+            }
+          })
+        })
+        
         res.json({data:records}).status(200).end();
       } catch (error) {
         res.send(error);
@@ -255,6 +266,15 @@ app.post('/endereco', async (req, res) => {
       } catch (error) {
         res.send(error);
       }
+  })
+
+  app.get('/pessoa',async(req,res)=>{
+    try{
+      const people = await pessoa.findAll();
+      res.json({data:JSON.stringify(people)}).status(200).end;
+    }catch(error){
+      res.send(error)
+    }
   })
   
 

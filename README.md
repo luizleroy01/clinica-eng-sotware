@@ -1,7 +1,5 @@
 # clinica-eng-sotware
 
-A explicação sobre a integração entre o backend e o frontend está no link: <a href="https://youtu.be/NH76mk5qhuA">Integração front com back</a>
-
 ## Utilização
 Para executar o projeto deve-se executar separadamente o backend e o front , sendo assi para o bak deve-se:
 >cd backend-clinica

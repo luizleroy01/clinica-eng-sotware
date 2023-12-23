@@ -1,6 +1,7 @@
 import styles from './Form.module.css';
 import { useState, useEffect} from 'react';
 import {getDoctorRoles,getDoctorNames,getSchedule,saveDataSchedule} from '../../configuration.js';
+import axios from 'axios';
 export function FormAppointment(){
 
     const hoursDay =['8','9','10','11','12','13','14','15','16','17']
@@ -20,8 +21,8 @@ export function FormAppointment(){
     useEffect(()=>{
         async function fetchData(){
           const url = getDoctorRoles
-          const res = await fetch(url)
-          const data = await res.json()
+          const res = await axios.get(url);
+          const {data} = res.data;
           setRoles(data);
           console.log(data);
           console.log(getDoctorRoles)
@@ -33,8 +34,8 @@ export function FormAppointment(){
         setDoctorRole(value);
         async function fetchData(){
             const url = getDoctorNames
-            const res = await fetch(url)
-            const data = await res.json()
+            const res = await axios.get(url);
+            const {data} = res.data;
             let doctors = []
             data.forEach((d)=>{
                 if(d.especialidade == value){
@@ -122,8 +123,8 @@ export function FormAppointment(){
                 <label>
                     Especialidade:
                     <select name="medico" value={doctorRole} onChange={(e)=>searchDoctors(e.target.value)}>
-                        {roles.map((role)=>(
-                            <option key={role.id} value={role.title}>{role.title}</option>
+                        {roles.map((role,i)=>(
+                            <option key={i} value={role}>{role}</option>
                         ))}
                     </select>
                 </label>

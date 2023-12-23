@@ -276,8 +276,25 @@ app.post('/endereco', async (req, res) => {
       res.send(error)
     }
   })
-  
 
+  app.get('/medico',async(req,res)=>{
+    try{
+      //adicionar busca de médicos aqui
+    }catch(err){
+      res.send(err);
+    }
+  })
+
+app.get('/especialidade',async(req,res)=>{
+  try{
+    const doctors = await medico.findAll();
+    const records = doctors.flatMap((doctor)=>doctor.especialidade);
+    res.json({data:records}).status(200);
+
+  }catch(err){
+    res.send(err);
+  }
+})
 app.listen(port,()=>{
     console.log(`Server is running on port ${port}`)
 })

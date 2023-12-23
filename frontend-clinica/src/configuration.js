@@ -1,7 +1,7 @@
 export const baseURL ="http://localhost:5173/"
 
 //Para o formulário de consulta
- export const getDoctorRoles="#";
+ export const getDoctorRoles="http://localhost:5000/especialidade";
  export const getDoctorNames = "#";
  export const getSchedule = "#";
  export const saveDataSchedule = "#";

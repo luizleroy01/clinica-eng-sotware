@@ -7,7 +7,7 @@ export function FormAppointment(){
     const hoursDay =['8','9','10','11','12','13','14','15','16','17']
 
     const[doctorName,setDoctorName] = useState("")
-    const[doctorRole,setDoctorRole] = useState("")
+    const[doctorRole,setDoctorRole] = useState("cardiologista")
     const[date,setDate] = useState("")
     const[chooseHour,setChooseHour] = useState("")
     const[nomePaciente,setNomePaciente] = useState("")
@@ -32,19 +32,16 @@ export function FormAppointment(){
 
       const searchDoctors = (value) =>{
         setDoctorRole(value);
+        console.log(value)
         async function fetchData(){
-            const url = getDoctorNames
-            const res = await axios.get(url);
+            const url = getDoctorNames+value;
+            const res = await axios.get(url)
             const {data} = res.data;
-            let doctors = []
-            data.forEach((d)=>{
-                if(d.especialidade == value){
-                    doctors.push(d)
-                }
-            })
-            setDoctors(doctors)
+            
+            setDoctors(data)
+            console.log(doctors);
         }
-        fetchData()
+        fetchData();
       }
 
       const searchHours = (value)=>{
@@ -132,7 +129,7 @@ export function FormAppointment(){
                     Medico:
                     <select name="medico" value={doctorName} onChange={(e)=>setDoctorName(e.target.value)}>
                         {doctors.map((doctor)=>(
-                            <option key={doctor.id} value={doctor.name}>{doctor.name}</option>
+                            <option key={doctor.codigo} value={doctor.nome}>{doctor.nome}</option>
                         ))}
                     </select>
                 </label>

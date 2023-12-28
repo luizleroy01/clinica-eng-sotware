@@ -8,6 +8,7 @@ const paciente = require('./src/database/tables/paciente');
 const agenda = require('./src/database/tables/agenda');
 const prontuario = require('./src/database/tables/prontuario');
 const medico = require('./src/database/tables/medico')
+const { Sequelize } = require('sequelize')
 const app = express();
 
 const port = 5000
@@ -277,9 +278,33 @@ app.post('/endereco', async (req, res) => {
     }
   })
 
-  app.get('/medico',async(req,res)=>{
+  app.get('/medicos/:especialidade',async(req,res)=>{
     try{
-      //adicionar busca de médicos aqui
+      const especialidade = req.params.especialidade;
+      console.log(especialidade);
+
+      const doctors = await medico.findAll({
+        where:{
+          especialidade:especialidade
+        }
+      });
+
+      let codeEmployees = doctors.flatMap((doctor)=>doctor.codigo_funcionario);
+      const employees = await funcionario.findAll({
+        where:{
+          codigo:Sequelize.literal(`codigo IN (${codeEmployees.join(',')})`)
+        }
+      });
+
+      let codePeople = employees.flatMap((person)=>person.codigo_pessoa);
+      const people = await pessoa.findAll({
+        where:{
+          codigo:Sequelize.literal(`codigo IN (${codePeople.join(',')})`)
+        }
+      });
+
+     
+      res.json({data:people}).status(200);
     }catch(err){
       res.send(err);
     }

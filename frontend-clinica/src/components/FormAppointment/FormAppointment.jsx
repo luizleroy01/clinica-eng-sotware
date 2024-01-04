@@ -6,6 +6,7 @@ export function FormAppointment(){
 
     const hoursDay =['8','9','10','11','12','13','14','15','16','17']
 
+    const [doctorCode,setDoctorCode] = useState("")
     const[doctorName,setDoctorName] = useState("")
     const[doctorRole,setDoctorRole] = useState("cardiologista")
     const[date,setDate] = useState("")
@@ -77,6 +78,12 @@ export function FormAppointment(){
         return res.json()
     }
 
+    const setDoctorData = (value)=>{
+        const data = JSON.parse(value)
+        setDoctorName(data.nome)
+        setDoctorCode(data.codigo)
+    }
+
     const handleSubmit = (e) => {
         e.preventDefault()
         let emailIsValid = validarEmail(emailPaciente)
@@ -84,17 +91,17 @@ export function FormAppointment(){
             return
         }
         const schedule ={
-            role:doctorRole,
-            doctor:doctorRole,
+            medico:doctorName,
             date:date,
             hour:chooseHour,
             name:nomePaciente,
             phone:telefonePaciente,
-            email:emailPaciente
+            email:emailPaciente,
+            codigo_medico:doctorCode
         }
         
 
-        const resposta = saveSchedule(schedule);
+        //const resposta = saveSchedule(schedule);
         console.log(schedule)
         
         setDoctorRole(roles[0])
@@ -119,7 +126,7 @@ export function FormAppointment(){
             <h3>Agendamento de consulta</h3>
                 <label>
                     Especialidade:
-                    <select name="medico" value={doctorRole} onChange={(e)=>searchDoctors(e.target.value)}>
+                    <select name="especialidade" value={doctorRole} onChange={(e)=>searchDoctors(e.target.value)}>
                         {roles.map((role,i)=>(
                             <option key={i} value={role}>{role}</option>
                         ))}
@@ -127,15 +134,18 @@ export function FormAppointment(){
                 </label>
                 <label>
                     Medico:
-                    <select name="medico" value={doctorName} onChange={(e)=>setDoctorName(e.target.value)}>
+                    <select name="medico" value={doctorName} onChange={(e)=>setDoctorData(e.target.value)}>
+                        <option value="">Selecione o nome do médico</option>
                         {doctors.map((doctor)=>(
-                            <option key={doctor.codigo} value={doctor.nome}>{doctor.nome}</option>
+                            <option key={doctor.codigo} value={JSON.stringify({nome:doctor.nome,codigo:doctor.codigo})}>{doctor.nome}</option>
                         ))}
                     </select>
                 </label>
                 <label>
                     Data da consulta:
-                    <input type="date" name="data-consulta" value={date} onChange={(e)=>searchHours(e.target.value)} />
+                    <input type="date" 
+                    name="data-consulta" 
+                    value={date} onChange={(e)=>searchHours(e.target.value)} placeholder="Selecione a data da consulta"/>
                 </label>
                 <label>
                     Horário da consulta:

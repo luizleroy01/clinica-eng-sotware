@@ -1,14 +1,20 @@
 const express = require('express')
+const router = express.Router()
 const bodyParser = require('body-parser')
 const cors = require('cors')
-const enderecos = require('./src/database/tables/address')
+
+
 const pessoa = require('./src/database/tables/pessoa')
 const funcionario = require('./src/database/tables/funcionario');
 const paciente = require('./src/database/tables/paciente');
 const agenda = require('./src/database/tables/agenda');
 const prontuario = require('./src/database/tables/prontuario');
 const medico = require('./src/database/tables/medico')
+
 const { Sequelize } = require('sequelize')
+
+//importação dos acessos às rotas
+const routeAddress = require('./src/routes/encerecos')
 const app = express();
 
 const port = 5000
@@ -35,54 +41,14 @@ app.get('/syncDatabase', async (req, res) => {
     }
   });
   
+app.use('/',router)
 
-app.get('/', (req, res) => {
-    res.json({"resposta":"está funcionado a rota principal"})
-})
 
-app.post('/endereco', async (req, res) => {
-    try {
-      const params = req.body;
-      console.log(req.body);
-      
-  
-      const properties = ['cep', 'logradouro', 'bairro', 'cidade','estado'];
-  
-      const check = properties.every((property) => {
-        return property in params;
-      });
-  
-      if (!check) {
-        const propStr = properties.join(', ');
-        res.send(`All parameters needed to create a programmer must be sent: ${propStr}`);
-        return;
-      }
-      
-      const newAddress = await enderecos.create({
-        cep: params.cep,
-        logradouro: params.logradouro,
-        bairro: params.bairro,
-        cidade: params.cidade,
-        estado: params.estado
-      });
-   
-      res.json({"response":"Inserido com sucesso"}).status(200);
-    } catch (error) {
-      res.send(error);
-    }
-  });
+router.route('/endereco')
+      .post(routeAddress.createAddress)
+      .get(routeAddress.readAdress)
 
-  app.get('/endereco', async (req, res) => {
-    
-    try {
-      const records = await enderecos.findAll();
   
-      res.json({data:records}).status(200).end();
-    } catch (error) {
-      res.send(error);
-    }
-  });
-
   app.post('/consulta',async(req,res)=>{
     try {
         const params = req.body;
@@ -254,19 +220,21 @@ app.post('/endereco', async (req, res) => {
             codigo_medico: params.codigo_medico
         })
 
-        const newPerson = await pessoa.create({
-            nome: params.nome,
-            telefone: params.telefone,
-            email: params.email,
-        })
 
-
-        res.json({"pessoa":JSON.stringify(newPerson),
-        "paciente":JSON.stringify(newPatient)}).status(200);
-        //res.json({"response":"Inserido com sucesso"}).status(200);
+        res.json({agenda:newSchedule})
       } catch (error) {
         res.send(error);
       }
+  })
+
+  app.get('/a',async(req,res)=>{
+    try{
+      const schedules = await agenda.findAll();
+
+  
+    }catch(err){
+      res.send(err);
+    }
   })
 
   app.get('/pessoa',async(req,res)=>{
@@ -281,7 +249,6 @@ app.post('/endereco', async (req, res) => {
   app.get('/medicos/:especialidade',async(req,res)=>{
     try{
       const especialidade = req.params.especialidade;
-      console.log(especialidade);
 
       const doctors = await medico.findAll({
         where:{

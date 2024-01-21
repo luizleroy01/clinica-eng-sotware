@@ -11,7 +11,9 @@ const createAddress = async(req,res)=>{
             }
         })
 
-        if(searchAdress){
+        console.log("endereco"+searchAdress)
+
+        if(searchAdress.length){
             res.json({data:"O endereço já foi cadastrado"})
             return
         }

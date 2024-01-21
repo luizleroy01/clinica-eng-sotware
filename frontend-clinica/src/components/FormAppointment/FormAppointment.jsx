@@ -1,10 +1,10 @@
 import styles from './Form.module.css';
 import { useState, useEffect} from 'react';
-import {getDoctorRoles,getDoctorNames,getSchedule,saveDataSchedule} from '../../configuration.js';
+import {getDoctorRoles,getDoctorNames,getSchedule,saveDataSchedule,getDoctors} from '../../configuration.js';
 import axios from 'axios';
 export function FormAppointment(){
 
-    const hoursDay =['8','9','10','11','12','13','14','15','16','17']
+    const hoursDay =[8,9,10,11,12,13,14,15,16,17]
 
     const [doctorCode,setDoctorCode] = useState("")
     const[doctorName,setDoctorName] = useState("")
@@ -47,21 +47,29 @@ export function FormAppointment(){
 
       const searchHours = (value)=>{
         setDate(value);
+        const info = {
+            data:date,
+            nome:doctorName,
+            especialidade:doctorRole
+        }
         async function fetchData(){
-            const url = getSchedule
-            const res = await fetch(url)
-            const data = await res.json()
-            let schedules =[]
-            data.forEach((d)=>{
-                if(d.date == value){
-                    schedules.push(d.time)
-                }
-            })
+            const url = getSchedule;
 
-           let validHours = hoursDay.filter(item=>!schedules.includes(item))
-           let arr = validHours.slice()
-           console.log(arr)
-            setHours(validHours)
+            const res = await fetch(url,{
+            method:'POST',
+            headers:{
+                'Content-Type':'application/json'
+            },
+            body:JSON.stringify(info)
+            })
+            
+            const {data} = await res.json()
+
+            console.log(data);
+
+            let validHours = hoursDay.filter(h =>!data.includes(h))
+            console.log(validHours);
+            setHours(validHours);
         }
         fetchData()
 
@@ -79,9 +87,28 @@ export function FormAppointment(){
     }
 
     const setDoctorData = (value)=>{
-        const data = JSON.parse(value)
-        setDoctorName(data.nome)
-        setDoctorCode(data.codigo)
+        setDoctorName(value);
+        const info = {
+            nome:value,
+            especialidade:doctorRole
+        }
+       
+        async function fetchData(){
+            const url = getDoctors
+            const res = await fetch(url,{
+                method:'POST',
+                headers:{
+                    'Content-Type':'application/json'
+                },
+                body:JSON.stringify(info)
+            });
+            const {data} = res;
+            console.log(data);
+            return null;
+        }
+        const doctor = fetchData()
+       
+        setDoctorCode(doctor[0])
     }
 
     const handleSubmit = (e) => {
@@ -118,6 +145,11 @@ export function FormAppointment(){
         // Define a expressão regular para validar o formato do e-mail
         var regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return regex.test(email)
+    }
+
+    //criar função para quando selecionar o médico, utilizar o codigo da pessoa para buscar o código do médico
+    const searchDoctorCode = ()=>{
+        //implementar
     }
 
     return(

@@ -3,18 +3,20 @@ const router = express.Router()
 const bodyParser = require('body-parser')
 const cors = require('cors')
 
-
+const db = require('./src/database/db')
 const pessoa = require('./src/database/tables/pessoa')
 const funcionario = require('./src/database/tables/funcionario');
 const paciente = require('./src/database/tables/paciente');
-const agenda = require('./src/database/tables/agenda');
+
 const prontuario = require('./src/database/tables/prontuario');
 const medico = require('./src/database/tables/medico')
+const consulta = require('./src/database/tables/consulta')
 
 const { Sequelize } = require('sequelize')
 
 //importação dos acessos às rotas
 const routeAddress = require('./src/routes/encerecos')
+const routeHorario = require('./src/routes/horario')
 const app = express();
 
 const port = 5000
@@ -48,38 +50,51 @@ router.route('/endereco')
       .post(routeAddress.createAddress)
       .get(routeAddress.readAdress)
 
+
+router.route('/horario')
+      .post(routeHorario.readHours)
+
   
   app.post('/consulta',async(req,res)=>{
     try {
         const params = req.body;
         console.log(req.body);
+
+        //realizar validação de dados, não pode haver uma consulta no mesmo horário com o 
+        //mesmo médico
         
-    
-        const properties = ['cep', 'logradouro', 'bairro', 'cidade','estado'];
-    
-        const check = properties.every((property) => {
-          return property in params;
-        });
-    
-        if (!check) {
-          const propStr = properties.join(', ');
-          res.send(`All parameters needed to create a programmer must be sent: ${propStr}`);
-          return;
-        }
-        
-        const newAddress = await enderecos.create({
-          cep: params.cep,
-          logradouro: params.logradouro,
-          bairro: params.bairro,
-          cidade: params.cidade,
-          estado: params.estado
-        });
+        const newSchedule = await consulta.create({
+          data: params.data,
+          horario:params.horario,
+          nome:params.nome,
+          telefone:params.telefone,
+          email:params.email,
+          codigo_medico:params.codigo_medico
+        })
      
         res.json({"response":"Inserido com sucesso"}).status(200);
       } catch (error) {
         res.send(error);
       }
   });
+
+  app.get('/consulta',async(req,res)=>{
+    try{
+      const consultas = await consulta.findAll();
+      res.json({consultas: consultas}).status(200).end();
+    }catch(err){
+      res.send(err);
+    }
+  })
+
+  app.delete('/consulta',async(req,res)=>{
+    try{
+      const consulta = await consulta.delete();
+      res.json({consultas: consulta}).status(200).end();
+    }catch(err){
+      res.send(err);
+    }
+  })
 
 
   app.post('/funcionario', async(req,res)=>{
@@ -206,37 +221,9 @@ router.route('/endereco')
       }
   })
 
-  app.post('/agenda',async(req,res)=>{
-    try {
-        const params = req.body;
-        console.log(req.body);
-        
-        const newSchedule = agenda.create({
-            data: params.data,
-            hora: params.hora,
-            nome: params.nome,
-            telefone: params.telefone,
-            email: params.email,
-            codigo_medico: params.codigo_medico
-        })
-
-
-        res.json({agenda:newSchedule})
-      } catch (error) {
-        res.send(error);
-      }
-  })
-
-  app.get('/a',async(req,res)=>{
-    try{
-      const schedules = await agenda.findAll();
+  
 
   
-    }catch(err){
-      res.send(err);
-    }
-  })
-
   app.get('/pessoa',async(req,res)=>{
     try{
       const people = await pessoa.findAll();
@@ -246,6 +233,7 @@ router.route('/endereco')
     }
   })
 
+//retorna as pessoas que são médicas
   app.get('/medicos/:especialidade',async(req,res)=>{
     try{
       const especialidade = req.params.especialidade;
@@ -255,6 +243,7 @@ router.route('/endereco')
           especialidade:especialidade
         }
       });
+
 
       let codeEmployees = doctors.flatMap((doctor)=>doctor.codigo_funcionario);
       const employees = await funcionario.findAll({
@@ -270,13 +259,22 @@ router.route('/endereco')
         }
       });
 
-     
       res.json({data:people}).status(200);
     }catch(err){
       res.send(err);
     }
   })
-
+//retorna o código dos médicos
+app.get('/medicosos',async(req,res)=>{
+  try{
+    const doctors = await medico.fetchAll();
+  
+    res.json({data:doctors}).status(200);
+  }catch(err){
+    res.send(err);
+  }
+})
+//retorna as especialidades ofertadas pela clínica
 app.get('/especialidade',async(req,res)=>{
   try{
     const doctors = await medico.findAll();

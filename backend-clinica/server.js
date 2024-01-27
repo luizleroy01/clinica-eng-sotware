@@ -232,6 +232,11 @@ router.route('/horario')
       res.send(error)
     }
   })
+  app.get('/codigo-medico/:idPessoa',async(re,res)=>{
+     
+  })
+
+
 
 //retorna as pessoas que são médicas
   app.get('/medicos/:especialidade',async(req,res)=>{
@@ -264,16 +269,7 @@ router.route('/horario')
       res.send(err);
     }
   })
-//retorna o código dos médicos
-app.get('/medicosos',async(req,res)=>{
-  try{
-    const doctors = await medico.fetchAll();
-  
-    res.json({data:doctors}).status(200);
-  }catch(err){
-    res.send(err);
-  }
-})
+
 //retorna as especialidades ofertadas pela clínica
 app.get('/especialidade',async(req,res)=>{
   try{

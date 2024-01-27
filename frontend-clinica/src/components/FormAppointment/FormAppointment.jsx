@@ -87,11 +87,13 @@ export function FormAppointment(){
     }
 
     const setDoctorData = (value)=>{
-        setDoctorName(value);
-        const info = {
-            nome:value,
-            especialidade:doctorRole
+        const information = JSON.parse(value);
+        console.log(information);
+        setDoctorName(information.name);
+        const info ={
+            codigo: information.codigo
         }
+        
        
         async function fetchData(){
             const url = getDoctors
@@ -102,7 +104,7 @@ export function FormAppointment(){
                 },
                 body:JSON.stringify(info)
             });
-            const {data} = res;
+            const {data} = res.data;
             console.log(data);
             return null;
         }

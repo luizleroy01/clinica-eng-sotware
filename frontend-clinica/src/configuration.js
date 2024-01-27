@@ -5,7 +5,7 @@ export const baseURL ="http://localhost:5173/"
  export const getDoctorNames = "http://localhost:5000/medicos/";
  export const getSchedule = "http://localhost:5000/horario/";
  export const saveDataSchedule = "#";
- export const getDoctors = "http://localhost:5000/medicos/";
+ export const getDoctors = "http://localhost:5000/medicos";
 
  //Para inserir e buscar os dados de endereço no banco
  export const saveDataAddress = "http://localhost:5000/endereco"

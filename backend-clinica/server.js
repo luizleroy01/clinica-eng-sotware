@@ -72,7 +72,7 @@ router.route('/horario')
           codigo_medico:params.codigo_medico
         })
      
-        res.json({"response":"Inserido com sucesso"}).status(200);
+        res.json({data:true}).status(200);
       } catch (error) {
         res.send(error);
       }
@@ -87,10 +87,15 @@ router.route('/horario')
     }
   })
 
-  app.delete('/consulta',async(req,res)=>{
+  app.delete('/consulta/:codigo',async(req,res)=>{
     try{
-      const consulta = await consulta.delete();
-      res.json({consultas: consulta}).status(200).end();
+      const codigo = req.params.codigo;
+      await consulta.delete({
+        where:{
+          codigo:codigo
+        }
+      });
+      res.json({data:"Deletado com sucesso"}).status(200).end();
     }catch(err){
       res.send(err);
     }
@@ -232,8 +237,17 @@ router.route('/horario')
       res.send(error)
     }
   })
-  app.get('/codigo-medico/:idPessoa',async(re,res)=>{
-     
+  app.get('/codigo-medico/:codigoPessoa',async(req,res)=>{
+     try{
+        const codigoPessoa = req.params.codigoPessoa;
+        const employee = await funcionario.findOne({where:{codigo_pessoa:codigoPessoa}});
+        let code = employee.codigo
+        const doctor = await medico.findOne({where:{codigo_funcionario:code}}); 
+        res.json({data:doctor.codigo}).status(200).end();
+
+     }catch(error){
+      res.json({data:error.message}).status(400);
+     }
   })
 
 

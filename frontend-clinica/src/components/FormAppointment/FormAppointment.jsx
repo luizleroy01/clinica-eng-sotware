@@ -2,6 +2,7 @@ import styles from './Form.module.css';
 import { useState, useEffect} from 'react';
 import {getDoctorRoles,getDoctorNames,getSchedule,saveDataSchedule,getDoctors} from '../../configuration.js';
 import axios from 'axios';
+
 export function FormAppointment(){
 
     const hoursDay =[8,9,10,11,12,13,14,15,16,17]
@@ -14,6 +15,7 @@ export function FormAppointment(){
     const[nomePaciente,setNomePaciente] = useState("")
     const[emailPaciente,setEmailPaciente] = useState("")
     const[telefonePaciente,setTelefonePaciente] = useState("")
+    const[scheduled,setScheduled] = useState(false);
 
     const[roles,setRoles] = useState([])
     const[doctors,setDoctors] = useState([])
@@ -25,10 +27,13 @@ export function FormAppointment(){
           const res = await axios.get(url);
           const {data} = res.data;
           setRoles(data);
-          console.log(data);
+          console.log(data[0]);
+          searchDoctors(data[0]);
           console.log(getDoctorRoles)
         }
         fetchData()
+      
+
       },[])
 
       const searchDoctors = (value) =>{
@@ -48,9 +53,8 @@ export function FormAppointment(){
       const searchHours = (value)=>{
         setDate(value);
         const info = {
-            data:date,
-            nome:doctorName,
-            especialidade:doctorRole
+            data:value,
+            codigo:doctorCode
         }
         async function fetchData(){
             const url = getSchedule;
@@ -65,7 +69,7 @@ export function FormAppointment(){
             
             const {data} = await res.json()
 
-            console.log(data);
+            console.log("data: "+data);
 
             let validHours = hoursDay.filter(h =>!data.includes(h))
             console.log(validHours);
@@ -83,34 +87,27 @@ export function FormAppointment(){
             },
             body:JSON.stringify(schedule)
         })
-        return res.json()
+        const {data} = await res.json()
+        console.log(data);
+        setScheduled(data);
+        return data;
     }
 
     const setDoctorData = (value)=>{
         const information = JSON.parse(value);
         console.log(information);
         setDoctorName(information.name);
-        const info ={
-            codigo: information.codigo
-        }
+        let info = information.codigo;
         
        
         async function fetchData(){
-            const url = getDoctors
-            const res = await fetch(url,{
-                method:'POST',
-                headers:{
-                    'Content-Type':'application/json'
-                },
-                body:JSON.stringify(info)
-            });
+            const url = getDoctors+info;
+            const res = await axios.get(url);
             const {data} = res.data;
-            console.log(data);
-            return null;
+            setDoctorCode(data);
+            
         }
-        const doctor = fetchData()
-       
-        setDoctorCode(doctor[0])
+        fetchData();
     }
 
     const handleSubmit = (e) => {
@@ -120,18 +117,19 @@ export function FormAppointment(){
             return
         }
         const schedule ={
-            medico:doctorName,
-            date:date,
-            hour:chooseHour,
-            name:nomePaciente,
-            phone:telefonePaciente,
+            data:date,
+            horario:chooseHour,
+            nome:nomePaciente,
+            telefone:telefonePaciente,
             email:emailPaciente,
             codigo_medico:doctorCode
         }
         
 
-        //const resposta = saveSchedule(schedule);
+        const resposta = saveSchedule(schedule);
+        //resposta.resolve().then("Inserido corretamente")
         console.log(schedule)
+        console.log(typeof(resposta))
         
         setDoctorRole(roles[0])
         setDoctorName("")
@@ -149,13 +147,15 @@ export function FormAppointment(){
         return regex.test(email)
     }
 
-    //criar função para quando selecionar o médico, utilizar o codigo da pessoa para buscar o código do médico
-    const searchDoctorCode = ()=>{
-        //implementar
-    }
+    
+    
 
     return(
         <div>
+            {scheduled && (<div className={styles.sucess}>
+                <h2>Consulta agendada com sucesso</h2>
+                <button onClick={(e)=>setScheduled(false)}>fechar</button>
+            </div>)}
             <form onSubmit={handleSubmit}>
             <h3>Agendamento de consulta</h3>
                 <label>
@@ -178,7 +178,7 @@ export function FormAppointment(){
                 <label>
                     Data da consulta:
                     <input type="date" 
-                    name="data-consulta" 
+                    name="data_consulta" 
                     value={date} onChange={(e)=>searchHours(e.target.value)} placeholder="Selecione a data da consulta"/>
                 </label>
                 <label>
